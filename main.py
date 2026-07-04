@@ -2,7 +2,7 @@ import os
 import random
 import csv
 from datetime import datetime, timezone
-from typing import Optional, Dict, Tuple
+from typing import Optional, Dict
 import json
 import discord
 from discord import app_commands
@@ -266,11 +266,6 @@ async def add_quote(interaction: discord.Interaction, message: discord.Message):
 
     if message.author.bot:
         print("Bot detected")
-        await interaction.response.send_message(content="Bots are not allowed")
-        return
-
-    if message.webhook_id is not None:
-        print("Webhook detected")
         await interaction.response.send_message(content="Bots are not allowed")
         return
 
