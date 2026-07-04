@@ -210,6 +210,8 @@ async def quote(
         text = randommsg["text"]
         if isinstance(text, list):
             text = " ".join(text)
+        if len(text) > 4080:
+            text = text[:4080] + "..."
         id = randommsg["message_id"]
         timestamp = randommsg["timestamp"]
 
@@ -228,6 +230,8 @@ async def quote(
     text = randommsg["text"]
     if isinstance(text, list):
         text = " ".join(text)
+    if len(text) > 4080:
+        text = text[:4080] + "..."
     id = randommsg["message_id"]
     timestamp = randommsg["timestamp"]
     author_id = randommsg["authors"][0]
