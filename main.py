@@ -156,6 +156,7 @@ async def saas_check(interaction: discord.Interaction):
     global saas_switch, saas_user_ids
     if saas_switch:
         if interaction.user.id in saas_user_ids:
+            await error(interaction, "SAAS - " + interaction.user.id)
             return True
     return False
 
@@ -255,7 +256,7 @@ async def quote(
     return
 
 
-@commands.cooldown(1, 3, commands.BucketType.user)
+@app_commands.checks.cooldown(1, 3.0)
 @bot.tree.context_menu(name="Add a quote")
 async def add_quote(interaction: discord.Interaction, message: discord.Message):
     global lastquote
@@ -273,7 +274,30 @@ async def add_quote(interaction: discord.Interaction, message: discord.Message):
         await interaction.response.send_message(content="Bots are not allowed")
         return
 
-    messageuser = await interaction.channel.fetch_message(message.id)
+
+    try:
+        messageuser = await interaction.channel.fetch_message(message.id)
+    except Exception as e:
+        await error(interaction, e)
+        return
+
+    servers = [
+        1502143252143276042,
+        1276099166522572832
+    ]
+
+    if messageuser.guild.id not in servers:
+        print(f"Interaction User: {messageuser.author} (ID: {messageuser.author.id})")
+        print(f"Interaction User Display Name: {messageuser.author.display_name}")
+        print(f"Interaction Guild: {messageuser.guild} (ID: {messageuser.guild.id})")
+        print(f"Interaction Channel: {messageuser.channel} (ID: {messageuser.channel.id})")
+        print(f"Target Message Content: {messageuser.content}")
+        print(f"Target Message Author: {messageuser.author} (ID: {messageuser.author.id})")
+        print(f"Target Message Author Display Name: {messageuser.author.display_name}")
+        print(f"Target Message ID: {messageuser.id}")
+        print(f"Target Message Timestamp: {messageuser.created_at}")
+        await error(interaction, "SERVER NOT ALLOWED")
+        return
 
     current_time = datetime.now(tz=timezone.utc).timestamp()
 
@@ -292,16 +316,18 @@ async def add_quote(interaction: discord.Interaction, message: discord.Message):
 
     lastquote = message.content
 
+
+
     # Heck ton of logging for exploitation logging
-    print(f"Interaction User: {interaction.user} (ID: {interaction.user.id})")
-    print(f"Interaction User Display Name: {interaction.user.display_name}")
-    print(f"Interaction Guild: {interaction.guild} (ID: {interaction.guild_id})")
-    print(f"Interaction Channel: {interaction.channel} (ID: {interaction.channel_id})")
-    print(f"Target Message Content: {message.content}")
-    print(f"Target Message Author: {message.author} (ID: {message.author.id})")
-    print(f"Target Message Author Display Name: {message.author.display_name}")
-    print(f"Target Message ID: {message.id}")
-    print(f"Target Message Timestamp: {message.created_at}")
+    print(f"Interaction User: {messageuser.author} (ID: {messageuser.author.id})")
+    print(f"Interaction User Display Name: {messageuser.author.display_name}")
+    print(f"Interaction Guild: {messageuser.guild} (ID: {messageuser.guild.id})")
+    print(f"Interaction Channel: {messageuser.channel} (ID: {messageuser.channel.id})")
+    print(f"Target Message Content: {messageuser.content}")
+    print(f"Target Message Author: {messageuser.author} (ID: {messageuser.author.id})")
+    print(f"Target Message Author Display Name: {messageuser.author.display_name}")
+    print(f"Target Message ID: {messageuser.id}")
+    print(f"Target Message Timestamp: {messageuser.created_at}")
 
     await stats_insert("add_quote")
 
@@ -465,6 +491,10 @@ async def duckroll(interaction: discord.Interaction):
     await interaction.response.send_message(file=discord.File("/var/www/html/duck.png")) # https://peap.me/duck.png
     await stats_insert("duckroll")
 
+async def error(interaction: discord.Interaction, code):
+
+    print("Error code: " + code)
+    await interaction.response.send_message(content="Peap bot is working fine! Your not worthy tho.")
 
 bot.run(TOKEN)
 
