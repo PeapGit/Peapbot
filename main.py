@@ -474,7 +474,7 @@ async def stats(interaction: discord.Interaction):
 
     quoteEmbed.add_field(name="Total number of commands Run on Peap bot", value=total, inline=False)
     quoteEmbed.add_field(name="Peap", value=commands_run["peap"], inline=False)
-    quoteEmbed.add_field(name="Quotes Added", value=commands_run["quote"], inline=False)
+    quoteEmbed.add_field(name="Quotes Added", value=commands_run["add_quote"], inline=False)
     quoteEmbed.add_field(name="Ducks Rolled", value=commands_run["duckroll"], inline=False)
     quoteEmbed.add_field(name="Uptime", value=commands_run["uptime"], inline=False)
     quoteEmbed.add_field(name="Quote", value=commands_run["quote"], inline=False)
