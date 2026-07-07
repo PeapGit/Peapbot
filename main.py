@@ -305,7 +305,7 @@ async def add_quote(interaction: discord.Interaction, message: discord.Message):
     quotes.append({
         "text": [messageuser.content],
         "authors": [messageuser.author.id],
-        "timestamp": messageuser.created_at.timestamp(),
+        "timestamp": discord.utils.snowflake_time(messageuser.id).timestamp(),
         "message_id": messageuser.id,
     })
 
@@ -493,6 +493,8 @@ async def error(interaction: discord.Interaction, code):
 
     print("Error code: " + code)
     await interaction.response.send_message(content="Peap bot is working fine! Your not worthy tho.")
+
+
 
 bot.run(TOKEN)
 
