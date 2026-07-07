@@ -299,15 +299,13 @@ async def add_quote(interaction: discord.Interaction, message: discord.Message):
         await error(interaction, "SERVER NOT ALLOWED")
         return
 
-    current_time = datetime.now(tz=timezone.utc).timestamp()
-
     with open(os.path.join(BASEDIR, "quotes.json"), "r", encoding="utf-8") as f:
         quotes = json.loads(f.read())
 
     quotes.append({
         "text": [messageuser.content],
         "authors": [messageuser.author.id],
-        "timestamp": current_time,
+        "timestamp": messageuser.created_at.timestamp(),
         "message_id": messageuser.id,
     })
 
