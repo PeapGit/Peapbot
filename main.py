@@ -1,4 +1,5 @@
 import os
+import asyncio
 import random
 import csv
 from datetime import datetime, timezone
@@ -274,11 +275,24 @@ async def add_quote(interaction: discord.Interaction, message: discord.Message):
         await interaction.response.send_message(content="Bots are not allowed")
         return
 
+    messageuser = None
+    for guild in bot.guilds:
+        for channel in guild.text_channels:
+            try:
+                messageuser = await channel.fetch_message(message.id)
+                break
+            except discord.NotFound:
+                pass
+            except discord.Forbidden:
+                pass
+            except discord.HTTPException as e:
+                if e.status == 429:
+                    await asyncio.sleep(e.retry_after)
+        if messageuser:
+            break
 
-    try:
-        messageuser = await interaction.channel.fetch_message(message.id)
-    except Exception as e:
-        await error(interaction, e)
+    if not messageuser:
+        await error(interaction, "Message not found across anything")
         return
 
     servers = [
